@@ -59,7 +59,7 @@ class GifDetails extends Component {
               </div>
             </div>
           
-            <a href="" class = "gif-info__btn button">Back</a>
+            <button class = "gif-info__btn button">Back</a>
           </div>`;
       } else {
         html = new Error404().render();
@@ -84,7 +84,7 @@ class GifDetails extends Component {
 
     backBtn.addEventListener('click', () => {
       // if (!backBtn.getAttribute('href')) {
-        event.preventDefault();
+        // event.preventDefault();
         if (document.referrer.length>0) {
           history.back();
         } else {
