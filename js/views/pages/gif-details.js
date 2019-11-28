@@ -85,7 +85,7 @@ class GifDetails extends Component {
     backBtn.addEventListener('click', () => {
       // if (!backBtn.getAttribute('href')) {
         event.preventDefault();
-        if (document.referrer) {
+        if (document.referrer.length) {
           history.back();
         } else {
           location.hash = '#/';
