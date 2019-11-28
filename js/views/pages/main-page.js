@@ -2,13 +2,13 @@ class MainPage extends Component {
 	constructor() {
 		super();
 		this.mainPageHtml = `
-	  <div class="searcher-wrapper">
-			<label class="searcher">
-				<h1 class="searcher__head">GIFs-searcher</h1>
-				<input class="searcher__field" type="search">
-				<button class="searcher__btn button" disabled>Search</button>
-			</label>
-		</div>`;
+	  	<div class="searcher-wrapper">
+				<label class="searcher">
+					<h1 class="searcher__head">GIFs-searcher</h1>
+					<input class="searcher__field" type="search">
+					<button class="searcher__btn button" disabled>Search</button>
+				</label>
+			</div>`;
 	}
 
 	render() {

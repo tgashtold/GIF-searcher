@@ -39,7 +39,6 @@ class SearchResults extends Component {
 
   render(gifs) {
     return new Promise(resolve => {
-      let html;
       let gifsHtml;
       let showMoreBtnHTML;
 
@@ -52,13 +51,13 @@ class SearchResults extends Component {
         showMoreBtnHTML = '';
       }
 
-      html = `${this.searcher.mainPageHtml}
-      <div class = "collection-wrapper">
-        <div class = "collection">
-          ${gifsHtml}
-        </div>
-        ${ showMoreBtnHTML}
-      </div>`;
+      const html = `${this.searcher.mainPageHtml}
+        <div class = "collection-wrapper">
+          <div class = "collection">
+            ${gifsHtml}
+          </div>
+          ${showMoreBtnHTML}
+        </div>`;
 
       resolve(html);
     });
@@ -93,6 +92,7 @@ class SearchResults extends Component {
           this.showAdditionalGifs(gifsArr.slice(0, this._gifsQuantityForOneRequest), gifsCollectionBox);
         } else {
           console.log('request');
+
           this.model.getGifs(this._gifsQuantityForOneRequest, this._searchStartNumber)
             .then(gifsObj => {
               gifsArr = this.filterServerResponse(gifsObj);
@@ -153,7 +153,7 @@ class SearchResults extends Component {
         creationDate: val.import_datetime,
         urlForOriginalSize: val.images.original.url,
         urlForPreview: val.images.preview_gif.url,
-      }
+      };
     });
 
     return filteredArr;
@@ -172,7 +172,7 @@ class SearchResults extends Component {
   }
 
   areGifsFinished() {
-    let areFinished = this._resultsQuantity == this._searchResultArr.length;
+    let areFinished = this._resultsQuantity === this._searchResultArr.length;
 
     return areFinished;
   }

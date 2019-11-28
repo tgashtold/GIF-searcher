@@ -7,8 +7,8 @@ class Cache {
     let arrInCache;
 
     for (let key in this._cache) {
-      if (key == searchText) {
-        arrInCache = this._cache[key]
+      if (key === searchText) {
+        arrInCache = this._cache[key];
       }
     }
 

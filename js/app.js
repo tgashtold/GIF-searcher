@@ -9,7 +9,7 @@ function router() {
     const request = Utils.parseRequestURL();
     const requestResource = request.resource.startsWith('search') 
         ? 'search' 
-        : (request.resource == 'gif') 
+        : (request.resource === 'gif') 
         ? 'gif'
         : '';
     const parsedURL = `/${requestResource}${request.id ? '/id' : ''}`;
@@ -22,7 +22,7 @@ function router() {
                     contentContainer.innerHTML = html;
                     page.afterRender();
                 });
-        })
+        });
 }
 
 window.addEventListener('load', router);

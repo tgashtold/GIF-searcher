@@ -37,13 +37,19 @@
 	}
 }
 
+@include media-max(1024px) {
+	.searcher__field {
+		width: 80%;
+	}
+}
+
 @include media-max(768px) {
 	.searcher {
 		margin-bottom: 60px;
 		margin-top: 20px;
 
 		&__field {
-			width: 80%;
+
 			@include font(13px);
 		}
 

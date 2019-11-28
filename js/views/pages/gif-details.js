@@ -7,46 +7,56 @@ class GifDetails extends Component {
 
   getData() {
     return new Promise(resolve => {
-      let gifId = Utils.parseRequestURL().id;
+      const gifId = Utils.parseRequestURL().id;
       this.gif = cache.getGifFromCache(gifId);
 
       if (this.gif) {
-        resolve(this.gif);
+        console.log('cache');
+
+        resolve([this.gif]);
       } else {
+        console.log('request');
+
         this.model.getGif()
           .then(gifObj => {
             const gifData = this.filterServerResponse(gifObj);
             this.gif = gifData;
-            resolve(this.gif);
+            const linkBack = '#/';
+
+            resolve([this.gif, linkBack]);
           })
           .catch(() => {
             this.gif = {};
-            resolve(this.gif)
+
+            resolve(this.gif);
           });
       }
     });
   }
 
-  render(gif) {
+  render(data) {
     return new Promise(resolve => {
       let html;
+      const gif = data[0];
+      const link = data[1];
 
       if (this.isAvailable()) {
-        html = ` <div class="gif-info">
-        <h1 class = "gif__title">${gif.title.toUpperCase()}</h1>
-        <img class="gif" src="${gif.urlForOriginalSize}" alt="GIF">
-        <div class="gif__details-wrapper">
-                       <div class="gif__details">
+        html = ` 
+          <div class="gif-info">
+            <h1 class = "gif__title">${gif.title.toUpperCase()}</h1>
+            <img class="gif" src="${gif.urlForOriginalSize}" alt="GIF">
+            <div class="gif__details-wrapper">
+              <div class="gif__details">
                 <span class="gif__details-title">Creation date:</span>
                 <span class="gif__details-value">${gif.creationDate}</span>
-            </div>
-            <div class="gif__details">
+              </div>
+              <div class="gif__details">
                 <span class="gif__details-title">Author: </span>
                 <span class="gif__details-value">${gif.author}</span>
+              </div>
             </div>
-        </div>
-        <button class = "gif-info__btn button">Back</button>
-    </div>`;
+            <a href="${link ? link : ''}" class = "gif-info__btn button">Back</a>
+          </div>`;
       } else {
         html = new Error404().render();
       }
@@ -69,18 +79,10 @@ class GifDetails extends Component {
     const backBtn = document.getElementsByClassName('gif-info__btn')[0];
 
     backBtn.addEventListener('click', () => {
-      let locationOrigin = location.origin;
-      let previousPage = document.referrer;
-      let previousPageOriginElArr = previousPage.split('');
+      if (!backBtn.getAttribute('href')) {
+        event.preventDefault();
 
-      previousPageOriginElArr.pop();
-
-      let previousPageOrigin = previousPageOriginElArr.join('');
-     
-      if (locationOrigin == previousPageOrigin) {
         history.back();
-      } else {
-        location.hash = '/';
       }
     });
   }
@@ -93,7 +95,7 @@ class GifDetails extends Component {
       title: gifInfo.title,
       creationDate: gifInfo.import_datetime,
       urlForOriginalSize: gifInfo.images.original.url,
-    }
+    };
 
     return filteredResponse;
   }

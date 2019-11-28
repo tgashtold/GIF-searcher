@@ -4,8 +4,8 @@ class Component {
     }
 
     getData() {
-    	return new Promise(resolve => resolve());
-	}
-	
+        return new Promise(resolve => resolve());
+    }
+
     afterRender() {}
 }
