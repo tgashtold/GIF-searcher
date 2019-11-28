@@ -13,7 +13,9 @@ class GifDetails extends Component {
       if (this.gif) {
         console.log('cache');
 
-        resolve([this.gif]);
+        // resolve([this.gif]);
+        
+        resolve(this.gif);
       } else {
         console.log('request');
 
@@ -21,9 +23,10 @@ class GifDetails extends Component {
           .then(gifObj => {
             const gifData = this.filterServerResponse(gifObj);
             this.gif = gifData;
-            const linkBack = '#/';
+            // const linkBack = '#/';
 
-            resolve([this.gif, linkBack]);
+            // resolve([this.gif, linkBack]);
+            resolve(this.gif);
           })
           .catch(() => {
             this.gif = {};
@@ -34,11 +37,11 @@ class GifDetails extends Component {
     });
   }
 
-  render(data) {
+  render(gif) {
     return new Promise(resolve => {
       let html;
-      const gif = data[0];
-      const link = data[1];
+      // const gif = data[0];
+      // const link = data[1];
 
       if (this.isAvailable()) {
         html = ` 
@@ -55,7 +58,8 @@ class GifDetails extends Component {
                 <span class="gif__details-value">${gif.author}</span>
               </div>
             </div>
-            <a href="${link ? link : ''}" class = "gif-info__btn button">Back</a>
+          
+            <a href="" class = "gif-info__btn button">Back</a>
           </div>`;
       } else {
         html = new Error404().render();
@@ -79,11 +83,14 @@ class GifDetails extends Component {
     const backBtn = document.getElementsByClassName('gif-info__btn')[0];
 
     backBtn.addEventListener('click', () => {
-      if (!backBtn.getAttribute('href')) {
+      // if (!backBtn.getAttribute('href')) {
         event.preventDefault();
-
-        history.back();
-      }
+        if (document.referrer) {
+          history.back();
+        } else {
+          location.hash = '#/';
+        }
+      // }
     });
   }
 
