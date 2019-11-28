@@ -1,0 +1,32 @@
+.gif {
+
+  &-info {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__title {
+    @include font(25px, 600);
+    color: $darkBlue;
+    margin: 50px 0;
+  }
+
+  &__details {
+    color: $darkBlue;
+
+    &-value {
+      font-weight: 600;
+    }
+
+    &-wrapper {
+      margin-top: 30px;
+    }
+
+    &+& {
+      margin-top: 15px;
+    }
+  }
+
+}
