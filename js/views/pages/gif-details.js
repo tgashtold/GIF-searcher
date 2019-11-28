@@ -59,7 +59,7 @@ class GifDetails extends Component {
               </div>
             </div>
           
-            <button class = "gif-info__btn button">Back</a>
+            <button class = "gif-info__btn">Back</button>
           </div>`;
       } else {
         html = new Error404().render();
