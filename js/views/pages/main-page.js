@@ -26,6 +26,13 @@ class MainPage extends Component {
 		const searchTextField = document.getElementsByClassName('searcher__field')[0];
 		const searchBox = document.getElementsByClassName('searcher')[0];
 
+		searchTextField.focus();
+
+		searchTextField.addEventListener('keydown', (event) => {
+			if (event.keyCode === 13 && !searchBtn.disabled) {
+				this.redirectToResultPage(searchTextField);
+			}
+		});
 
 		searchBox.addEventListener('input', (event) => {
 			const target = event.target;
@@ -33,13 +40,17 @@ class MainPage extends Component {
 
 			if (target == searchTextField) {
 				searchBtn.disabled = searchTextValue.trim() 
-					? false 
-					: true;
+				? false 
+				: true;
 			}
 		});
 
 		searchBtn.addEventListener('click', () => {
-			location.hash = `#/search?q=${searchTextField.value}`;
+			this.redirectToResultPage(searchTextField);
 		});
+	}
+
+	redirectToResultPage(input) {
+		location.hash = `#/search?q=${input.value}`;
 	}
 }
