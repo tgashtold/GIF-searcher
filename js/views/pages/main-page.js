@@ -1,19 +1,7 @@
 class MainPage extends Component {
-	constructor() {
-		super();
-		this.mainPageHtml = `
-	  	<div class="searcher-wrapper">
-				<label class="searcher">
-					<h1 class="searcher__head">GIFs-searcher</h1>
-					<input class="searcher__field" type="search">
-					<button class="searcher__btn button" disabled>Search</button>
-				</label>
-			</div>`;
-	}
-
 	render() {
 		return new Promise(resolve => {
-			resolve(this.mainPageHtml);
+			resolve(this.getMainPageHtml());
 		});
 	}
 
@@ -30,7 +18,7 @@ class MainPage extends Component {
 
 		searchTextField.addEventListener('keydown', (event) => {
 			if (event.keyCode === 13 && !searchBtn.disabled) {
-				this.redirectToResultPage(searchTextField);
+				PagesNavigator.redirectToSearchResultPage(searchTextField.value);
 			}
 		});
 
@@ -39,18 +27,24 @@ class MainPage extends Component {
 			const searchTextValue = searchTextField.value;
 
 			if (target == searchTextField) {
-				searchBtn.disabled = searchTextValue.trim() 
-				? false 
-				: true;
+				searchBtn.disabled = !searchTextValue.trim();
 			}
 		});
 
 		searchBtn.addEventListener('click', () => {
-			this.redirectToResultPage(searchTextField);
+			PagesNavigator.redirectToSearchResultPage(searchTextField.value);
 		});
 	}
 
-	redirectToResultPage(input) {
-		location.hash = `#/search?q=${input.value}`;
+
+	getMainPageHtml() {
+		return `
+	  	<div class="searcher-wrapper">
+				<label class="searcher">
+					<h1 class="searcher__head">GIFs-searcher</h1>
+					<input class="searcher__field" type="search">
+					<button class="searcher__btn button" disabled>Search</button>
+				</label>
+			</div>`;
 	}
 }

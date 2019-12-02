@@ -1,18 +1,11 @@
 class Cache {
-  constructor() {
-    this._cache = {};
-  }
+  _cache = {};
 
-  addToCache(searchText, dataArr) {
-    let arrInCache;
+  addToCache(searchTextValue, dataArr) {
+    const searchText = searchTextValue.toLowerCase();
+    const arrInCache= this._cache[searchText];
 
-    for (let key in this._cache) {
-      if (key === searchText) {
-        arrInCache = this._cache[key];
-      }
-    }
-
-    if (arrInCache) {
+      if (arrInCache) {
       const arrToAdd = dataArr.filter(gif => !arrInCache.find(gifInCache => gif.id === gifInCache.id));
 
       this._cache[searchText] = [...arrInCache, ...arrToAdd];
@@ -32,7 +25,7 @@ class Cache {
   }
 
   getGifsFromCache(searchText) {
-    let result = this._cache[searchText];
+    let result = this._cache[searchText.toLowerCase()];
 
     if (result) {
       return result;

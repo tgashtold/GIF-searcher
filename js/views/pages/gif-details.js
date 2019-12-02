@@ -1,102 +1,61 @@
 class GifDetails extends Component {
-  constructor() {
-    super();
-    this.model = new Gifs();
-    this.gif;
-  }
+    gif;
+    gifsService = new GifsService();
 
-  getData() {
-    return new Promise(resolve => {
-      const gifId = Utils.parseRequestURL().id;
-      this.gif = cache.getGifFromCache(gifId);
+    getData() {
+        return this.gifsService.getGifToRender();
+           }
 
-      if (this.gif) {
-        console.log('cache');
+    render(gifDataToRender) {
+        return new Promise(resolve => {
+            let html;
+            this.gif = gifDataToRender.gif;
+            const link = gifDataToRender.linkBack;
+          
+            if (this._isAvailable()) {
+                html = ` 
+                    <div class="gif-info">
+                        <h1 class = "gif__title">${this.gif.title.toUpperCase()}</h1>
+                        <img class="gif" src="${this.gif.urlForOriginalSize}" alt="GIF">
+                        <div class="gif__details-wrapper">
+                        <div class="gif__details">
+                            <span class="gif__details-title">Creation date:</span>
+                            <span class="gif__details-value">${this.gif.creationDate}</span>
+                        </div>
+                        <div class="gif__details">
+                            <span class="gif__details-title">Author: </span>
+                            <span class="gif__details-value">${this.gif.author || 'no data'}</span>
+                        </div>
+                        </div>
+                        <a href ="${link || ''}" class = "gif-info__btn button">Back</a>
+                    </div>`;
+            } else {
+                html = new Error404().render();
+            }
 
-        resolve([this.gif]);
-      } else {
-        console.log('request');
-
-        this.model.getGif()
-          .then(gifObj => {
-            const gifData = this.filterServerResponse(gifObj);
-            this.gif = gifData;
-            const linkBack = '#/';
-
-            resolve([this.gif, linkBack]);
-          })
-          .catch(() => {
-            this.gif = {};
-
-            resolve([this.gif]);
-          });
-      }
-    });
-  }
-
-  render(gifData) {
-    return new Promise(resolve => {
-      let html;
-      const gif = gifData[0];
-      const link = gifData[1];
-
-      if (this.isAvailable()) {
-        html = ` 
-          <div class="gif-info">
-            <h1 class = "gif__title">${gif.title.toUpperCase()}</h1>
-            <img class="gif" src="${gif.urlForOriginalSize}" alt="GIF">
-            <div class="gif__details-wrapper">
-              <div class="gif__details">
-                <span class="gif__details-title">Creation date:</span>
-                <span class="gif__details-value">${gif.creationDate}</span>
-              </div>
-              <div class="gif__details">
-                <span class="gif__details-title">Author: </span>
-                <span class="gif__details-value">${gif.author}</span>
-              </div>
-            </div>
-            <a href ="${link ? link : ''}" class = "gif-info__btn button">Back</a>
-          </div>`;
-      } else {
-        html = new Error404().render();
-      }
-
-      resolve(html);
-    });
-  }
-
-  afterRender() {
-    if (this.isAvailable()) {
-      this.setActions();
+            resolve(html);
+        });
     }
-  }
 
-  isAvailable() {
-    return !!Object.keys(this.gif).length;
-  }
+    afterRender() {
+        if (this._isAvailable()) {
+            this.setActions();
+        }
+    }
 
-  setActions() {
-    const backBtn = document.getElementsByClassName('gif-info__btn')[0];
+    setActions() {
+        const backBtn = document.getElementsByClassName('gif-info__btn')[0];
 
-    backBtn.addEventListener('click', () => {
-      if (!backBtn.getAttribute('href')) {
-        event.preventDefault();
+        backBtn.addEventListener('click', () => {
+            if (!backBtn.getAttribute('href')) {
+                event.preventDefault();
 
-        history.back();
-      }
-    });
-  }
-
-  filterServerResponse(response) {
-    const gifInfo = response.data;
-    const filteredResponse = {
-      id: gifInfo.id,
-      author: gifInfo.username || 'no data',
-      title: gifInfo.title,
-      creationDate: gifInfo.import_datetime,
-      urlForOriginalSize: gifInfo.images.original.url,
-    };
-
-    return filteredResponse;
-  }
+                history.back();
+            }
+        });
+    }
+    
+    _isAvailable() {
+        return !!Object.keys(this.gif).length;
+    }
 }
