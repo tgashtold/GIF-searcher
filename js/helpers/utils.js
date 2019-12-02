@@ -1,4 +1,9 @@
 class Utils {
+    static searchPageHashStart = 'search?q=';
+    static gifDetailsPageHashStart = 'gif';
+    static gifDetailsPageHashEnd = '/id';
+    static errorPageHashStart = 'error';
+
     static parseRequestURL() {
         const url = location.hash.slice(2);
         const request = {};
@@ -9,19 +14,21 @@ class Utils {
     }
 
     static getSearchRequestTextFromURL() {
-        const searchText = this.parseRequestURL().resource.replace('search?q=', '').replace(/%20/g, ' ');
+        const searchText = this.parseRequestURL().resource.replace(this.searchPageHashStart, '').replace(/%20/g, ' ');
 
         return searchText;
     }
 
     static getParsedLocationHash() {
         const request = this.parseRequestURL();
-        const requestResource = request.resource.startsWith('search?q=') 
-            ? 'search?q=' 
-            : (request.resource === 'gif') 
-                ? 'gif' 
-                :'';
+        const requestResource = request.resource.startsWith(this.searchPageHashStart) 
+            ? this.searchPageHashStart
+            : (request.resource === this.gifDetailsPageHashStart) 
+                ? this.gifDetailsPageHashStart 
+                : (request.resource === this.errorPageHashStart)
+                    ? this.errorPageHashStart
+                    :'';
 
-        return `/${requestResource}${request.id ? '/id' : ''}`;
+        return `/${requestResource}${request.id ? this.gifDetailsPageHashEnd : ''}`;
     }
 }

@@ -3,9 +3,9 @@ class Cache {
 
   addToCache(searchTextValue, dataArr) {
     const searchText = searchTextValue.toLowerCase();
-    const arrInCache= this._cache[searchText];
+    const arrInCache = this._cache[searchText];
 
-      if (arrInCache) {
+    if (arrInCache) {
       const arrToAdd = dataArr.filter(gif => !arrInCache.find(gifInCache => gif.id === gifInCache.id));
 
       this._cache[searchText] = [...arrInCache, ...arrToAdd];

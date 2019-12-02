@@ -3,17 +3,15 @@ class GifDetails extends Component {
     gifsService = new GifsService();
 
     getData() {
-        return this.gifsService.getGifToRender();
-           }
+        return this.gifsService.getGif(Utils.parseRequestURL().id);
+    }
 
     render(gifDataToRender) {
         return new Promise(resolve => {
-            let html;
             this.gif = gifDataToRender.gif;
             const link = gifDataToRender.linkBack;
-          
-            if (this._isAvailable()) {
-                html = ` 
+
+            const html = ` 
                     <div class="gif-info">
                         <h1 class = "gif__title">${this.gif.title.toUpperCase()}</h1>
                         <img class="gif" src="${this.gif.urlForOriginalSize}" alt="GIF">
@@ -29,18 +27,13 @@ class GifDetails extends Component {
                         </div>
                         <a href ="${link || ''}" class = "gif-info__btn button">Back</a>
                     </div>`;
-            } else {
-                html = new Error404().render();
-            }
 
             resolve(html);
         });
     }
 
     afterRender() {
-        if (this._isAvailable()) {
-            this.setActions();
-        }
+        this.setActions();
     }
 
     setActions() {
@@ -50,12 +43,8 @@ class GifDetails extends Component {
             if (!backBtn.getAttribute('href')) {
                 event.preventDefault();
 
-                history.back();
+                PagesNavigator.redirectToPreviousPage();
             }
         });
-    }
-    
-    _isAvailable() {
-        return !!Object.keys(this.gif).length;
     }
 }

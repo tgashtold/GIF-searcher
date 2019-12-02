@@ -4,19 +4,20 @@ class GiphyApi {
         const parsedResponse = await response.json();
 
         return {
-            gifsData: parsedResponse.data.map(this.mapGif),
+            gifsData: parsedResponse.data.map(this._mapGif),
             gifsTotalQnty: parsedResponse.pagination.total_count,
         };
     }
 
     async getGif(gifId) {
         const response = await fetch(`https://api.giphy.com/v1/gifs/${gifId}?api_key=RO1EUEkYWvD5a1TM08F8iztvm1pprCHT`);
+
         const gifInfo = await response.json();
 
-        return this.mapGif(gifInfo.data);
+        return this._mapGif(gifInfo.data);
     }
 
-    mapGif(gifInfo) {
+    _mapGif(gifInfo) {
         const gif = new Gif();
 
         gif.id = gifInfo.id;

@@ -3,7 +3,7 @@ class SearchResults extends Component {
     gifsService = new GifsService();
 
     getData() {
-        return this.gifsService.getGifsToRender();
+        return this.gifsService.getGifs(Utils.getSearchRequestTextFromURL());
     }
 
     render(gifs) {
@@ -45,9 +45,11 @@ class SearchResults extends Component {
 
         if (showMoreBtn) {
             showMoreBtn.addEventListener('click', () => {
-                this.gifsService.getAdditionalGifsToRender().then(gifs => this.showAdditionalGifs(gifs, gifsCollectionBox));
+                this.gifsService.getGifs(Utils.getSearchRequestTextFromURL()).then(gifs => {
+                    this.showAdditionalGifs(gifs, gifsCollectionBox);
 
-                this.validateShowMoreBtn();
+                    this.validateShowMoreBtn();
+                });
             });
         }
     }

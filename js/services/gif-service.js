@@ -2,70 +2,42 @@ class GifsService {
   gifsQuantityForOneRequest = 30;
   server = new GiphyApi();
   _searchStartNumber = 0;
-  _searchResultArr = [];
   _resultsQuantity;
 
-  getGifsToRender() {
+  getGifs(text) {
     return new Promise(resolve => {
-      const searchText = Utils.getSearchRequestTextFromURL();
+      const searchText = text;
       const gifsArrFromCache = cache.getGifsFromCache(searchText);
+      const startNumber = this._searchStartNumber;
 
-      if (gifsArrFromCache && (gifsArrFromCache.length >= this.gifsQuantityForOneRequest)) {
+      this._getNewSearchStartNumber();
+
+      if (gifsArrFromCache && (gifsArrFromCache.slice(startNumber).length >= this.gifsQuantityForOneRequest)) {
         console.log('cache');
 
-        this._addGifsToSeachResultArr(gifsArrFromCache);
-
-        resolve(gifsArrFromCache.slice(0, this.gifsQuantityForOneRequest));
+        resolve(gifsArrFromCache.slice(startNumber).slice(0, this.gifsQuantityForOneRequest));
       } else {
         console.log('request');
 
-        this.server.getGifsData(searchText, this.gifsQuantityForOneRequest, this._searchStartNumber)
+        this.server.getGifsData(searchText, this.gifsQuantityForOneRequest, startNumber)
           .then(gifsObj => {
             const gifs = gifsObj.gifsData;
 
-            this._addGifsToSeachResultArr(gifs);
             cache.addToCache(searchText, gifs);
 
             this._resultsQuantity = gifsObj.gifsTotalQnty;
 
             resolve(gifs);
-          });
+          }).catch(() => {
+            PagesNavigator.redirectToErrorPage();
+          });;
       }
     });
   }
 
-  getAdditionalGifsToRender() {
+  getGif(searchedGifId) {
     return new Promise(resolve => {
-      this._getNewSearchStartNumber();
-
-      const gifsToDisplayArr = this._searchResultArr.slice(this._searchStartNumber - 1);
-
-      if (gifsToDisplayArr.length >= this.gifsQuantityForOneRequest) {
-        console.log('cache');
-
-        resolve(gifsToDisplayArr.slice(0, this.gifsQuantityForOneRequest));
-      } else {
-        console.log('request');
-
-        const searchedText = Utils.getSearchRequestTextFromURL();
-
-        this.server.getGifsData(searchedText, this.gifsQuantityForOneRequest, this._searchStartNumber)
-          .then(gifsObj => {
-            const gifs = gifsObj.gifsData;
-
-            cache.addToCache(searchedText, gifs);
-            this._addGifsToSeachResultArr(gifs);
-
-            resolve(gifs);
-          });
-      }
-
-    });
-  }
-
-  getGifToRender() {
-    return new Promise(resolve => {
-      const gifId = Utils.parseRequestURL().id;
+      const gifId = searchedGifId;
       const gifToRender = cache.getGifFromCache(gifId);
 
       if (gifToRender) {
@@ -87,27 +59,21 @@ class GifsService {
             });
           })
           .catch(() => {
-            resolve({
-              gif: {},
-            });
+            PagesNavigator.redirectToErrorPage();
           });
       }
     });
   }
 
   areGifsFinished() {
-    let areFinished = this._resultsQuantity === this._searchResultArr.length;
+    let areFinished = this._resultsQuantity === cache.getGifsFromCache(Utils.getSearchRequestTextFromURL()).length;
 
     return areFinished;
   }
 
   _getNewSearchStartNumber() {
-    this._searchStartNumber = this._searchStartNumber + this.gifsQuantityForOneRequest + 1;
+    this._searchStartNumber = this._searchStartNumber + this.gifsQuantityForOneRequest;
 
     return this._searchStartNumber;
-  }
-
-  _addGifsToSeachResultArr(gifsArr) {
-    this._searchResultArr = [...this._searchResultArr, ...gifsArr];
   }
 }

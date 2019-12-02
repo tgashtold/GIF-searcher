@@ -7,10 +7,10 @@ function router() {
             page.render(data)
                 .then(html => {
                     contentContainer.innerHTML = html;
-                    
+
                     page.afterRender();
                 });
-        });
+        })
 }
 
 window.addEventListener('load', router);

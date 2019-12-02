@@ -11,4 +11,8 @@ const Routes = {
         url: '/gif/id',
         component: GifDetails,
     },
+    errorPage: {
+        url: '/error',
+        component: Error404,
+    },
 };
