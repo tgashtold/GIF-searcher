@@ -38,13 +38,13 @@ class GifsService {
   getGif(searchedGifId) {
     return new Promise(resolve => {
       const gifId = searchedGifId;
-      const gifToRender = cache.getGifFromCache(gifId);
+      const gifFromCache = cache.getGifFromCache(gifId);
 
-      if (gifToRender) {
+      if (gifFromCache) {
         console.log('cache');
 
         resolve({
-          gif: gifToRender,
+          gif: gifFromCache,
         });
       } else {
         console.log('request');
