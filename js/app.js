@@ -11,6 +11,7 @@ function router() {
                     page.afterRender();
                 });
         })
+        .catch(() => PagesNavigator.redirectToErrorPage());
 }
 
 window.addEventListener('load', router);

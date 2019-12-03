@@ -5,64 +5,57 @@ class GifsService {
   _resultsQuantity;
 
   getGifs(text) {
-    return new Promise(resolve => {
-      const searchText = text;
-      const gifsArrFromCache = cache.getGifsFromCache(searchText);
-      const startNumber = this._searchStartNumber;
+    const searchText = text;
+    const gifsArrFromCache = cache.getGifsFromCache(searchText);
+    const startNumber = this._searchStartNumber;
 
-      this._getNewSearchStartNumber();
+    this._getNewSearchStartNumber();
 
-      if (gifsArrFromCache && (gifsArrFromCache.slice(startNumber).length >= this.gifsQuantityForOneRequest)) {
-        console.log('cache');
+    if (gifsArrFromCache && (gifsArrFromCache.slice(startNumber).length >= this.gifsQuantityForOneRequest)) {
+      console.log('cache');
 
-        resolve(gifsArrFromCache.slice(startNumber).slice(0, this.gifsQuantityForOneRequest));
-      } else {
-        console.log('request');
+      return new Promise(resolve =>
+        resolve(gifsArrFromCache.slice(startNumber).slice(0, this.gifsQuantityForOneRequest))
+      );
+    } else {
+      console.log('request');
 
-        this.server.getGifsData(searchText, this.gifsQuantityForOneRequest, startNumber)
-          .then(gifsObj => {
-            const gifs = gifsObj.gifsData;
+      return this.server.getGifsData(searchText, this.gifsQuantityForOneRequest, startNumber)
+        .then(gifsObj => {
+          const gifs = gifsObj.gifsData;
 
-            cache.addToCache(searchText, gifs);
+          cache.addToCache(searchText, gifs);
 
-            this._resultsQuantity = gifsObj.gifsTotalQnty;
+          this._resultsQuantity = gifsObj.gifsTotalQnty;
 
-            resolve(gifs);
-          }).catch(() => {
-            PagesNavigator.redirectToErrorPage();
-          });;
-      }
-    });
+          return gifs;
+        });
+    }
   }
 
   getGif(searchedGifId) {
-    return new Promise(resolve => {
-      const gifId = searchedGifId;
-      const gifFromCache = cache.getGifFromCache(gifId);
+    const gifId = searchedGifId;
+    const gifFromCache = cache.getGifFromCache(gifId);
 
-      if (gifFromCache) {
-        console.log('cache');
+    if (gifFromCache) {
+      console.log('cache');
 
-        resolve({
-          gif: gifFromCache,
-        });
-      } else {
-        console.log('request');
+      return new Promise(resolve => resolve({
+        gif: gifFromCache,
+      }));
+    } else {
+      console.log('request');
 
-        this.server.getGif(gifId)
-          .then(gifObj => {
-            const linkBack = `#${Routes.mainPage.url}`;
+      return this.server.getGif(gifId)
+        .then(gifObj => {
+          const linkBack = `#${Routes.mainPage.url}`;
 
-            resolve({
-              gif: gifObj,
-              linkBack: linkBack,
-            });
-          })
-          .catch(() => {
-            PagesNavigator.redirectToErrorPage();
-          });
-      }
-    });
+          return {
+            gif: gifObj,
+            linkBack: linkBack,
+          };
+        })
+    }
   }
 
   areGifsFinished() {
